@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.net.Uri.Builder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -93,11 +94,21 @@ public class ForecastFragment extends Fragment {
             String forecastJsonString = null;
             Integer postalCode = params[0];
 
-            try {
+            try { 
+			 
+			 
+			 
+			
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are available at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q="+postalCode+"&mode=json&units=metric&cnt=7");
+                
+				Uri.Builder builder = new Uri.Builder();
+				builder.scheme("https").authority("www.myawesomesite.com").appendPath("turtles").appendPath("types").appendQueryParameter("type", "1").appendQueryParameter("sort", "relevance");
+
+				String myUrl = builder.build().toString();
+				
+				URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q="+postalCode+"&mode=json&units=metric&cnt=7");
                 Log.v(LOG_TAG, "url:"+url);
 
                 // Create the request to OpenWeatherMap, and open the connection
@@ -151,3 +162,4 @@ public class ForecastFragment extends Fragment {
 
     }
 }
+
