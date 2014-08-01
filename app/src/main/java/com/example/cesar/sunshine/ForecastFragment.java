@@ -4,6 +4,7 @@ package com.example.cesar.sunshine;
  * Created by Cesar on 7/25/2014.
  */
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,7 +32,6 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
 
     public ForecastFragment() {
-    //test
     }
 
     @Override
@@ -74,17 +74,17 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute();
+            new FetchWeatherTask().execute("94043");
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
+    private class FetchWeatherTask extends AsyncTask<String, Void, Void> {
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Void doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -93,15 +93,35 @@ public class ForecastFragment extends Fragment {
             // Will contain the raw JSON response as a string.
             String forecastJsonString = null;
 
+            String query = params[0];
+            String format = "json";
+            String units = "metric";
+            Integer numDays = 7;
+
+            // Uri params
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are available at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                
-                // base url, query parm, parm values,parms for post code,json format, metric unit, day count
-                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7");
+
+                final String FORECAST_BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
+                final String QUERY_PARAM = "q";
+                final String FORMAT_PARAM = "mode";
+                final String UNITS_PARAM = "units";
+                final String DAYS_PARAM = "cnt";
+
+                Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
+				.appendQueryParameter(QUERY_PARAM, query)
+                .appendQueryParameter(FORMAT_PARAM, format)
+                .appendQueryParameter(UNITS_PARAM, units)
+                .appendQueryParameter(DAYS_PARAM, numDays.toString())
+                .build();
+
+				URL url = new URL(builtUri.toString());
+                Log.v(LOG_TAG, "url:" + builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
+
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
@@ -128,6 +148,7 @@ public class ForecastFragment extends Fragment {
                     return null;
                 }
                 forecastJsonString = buffer.toString();
+                Log.v(LOG_TAG, "forecastJsonString:"+forecastJsonString);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attempting
@@ -151,3 +172,4 @@ public class ForecastFragment extends Fragment {
 
     }
 }
+
