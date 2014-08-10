@@ -4,8 +4,10 @@ package com.example.cesar.sunshine;
  * Created by Cesar on 7/25/2014.
  */
 
+import android.annotation.TargetApi;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,13 +31,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 
 public class ForecastFragment extends Fragment {
+
+    private ArrayAdapter<String> mForecastAdapter;
 
     public ForecastFragment() {
     }
@@ -50,6 +51,7 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        /* Fake data no longer needed
         String[] forecastArray = {
                 "Today - Sunny - 88 / 66",
                 "Tomorrow - Foggy - 70 / 46",
@@ -59,10 +61,11 @@ public class ForecastFragment extends Fragment {
                 "Sat - Sunny - 76 / 68"
         };
         List<String> weekForecast = new ArrayList<String>(
-                Arrays.asList(forecastArray));
-        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+                Arrays.asList(forecastArray)); */
+        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview);
+        //ArrayAdapter mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(adapter);
+        listView.setAdapter(mForecastAdapter);
         return rootView;
     }
 
@@ -87,6 +90,18 @@ public class ForecastFragment extends Fragment {
 
     private class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
+
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        @Override
+        protected void onPostExecute(String[] strings) {
+            super.onPostExecute(strings);
+            mForecastAdapter.clear();
+            for (String s : strings) {
+                mForecastAdapter.add(s);
+            }
+            //requires API 11, current Min is API 9
+            //mForecastAdapter.addAll(strings);
+        }
 
         @Override
         protected String[] doInBackground(String... params) {
@@ -123,7 +138,7 @@ public class ForecastFragment extends Fragment {
                 .build();
 
 				URL url = new URL(builtUri.toString());
-                Log.v(LOG_TAG, "url:" + builtUri.toString());
+                // Log.v(LOG_TAG, "url:" + builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
 
@@ -153,10 +168,10 @@ public class ForecastFragment extends Fragment {
                     return null;
                 }
                 forecastJsonString = buffer.toString();
-                Log.v(LOG_TAG, "forecastJsonString:"+forecastJsonString);
+                // Log.v(LOG_TAG, "forecastJsonString:"+forecastJsonString);
                 try {
                     String[] result = getWeatherDataFromJson(forecastJsonString, numDays);
-                    Log.v(LOG_TAG, "getWeatherDataFromJson:"+Arrays.toString(result));
+                    // Log.v(LOG_TAG, "getWeatherDataFromJson:"+Arrays.toString(result));
                     return result;
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, "Error ", e);
