@@ -5,13 +5,13 @@ package com.example.cesar.sunshine;
  */
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,9 +39,8 @@ import java.util.Date;
 
 //import android.widget.AdapterView;
 
-
 public class ForecastFragment extends Fragment {
-
+    private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
     private ArrayAdapter<String> mForecastAdapter;
 
     public ForecastFragment() {
@@ -94,8 +93,10 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-            String defaultLocation = sharedPreferences.getString(getString(R.string.pref_location_key),"94043");
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            //SharedPreferences sharedPref = getActivity().getSharedPreferences("pref_general",Context.MODE_PRIVATE);
+            String defaultLocation = sharedPreferences.getString("pref_general", getResources().getString(R.string.pref_location_default));
+            Log.v(LOG_TAG, "defaultLocation:" + defaultLocation);
             new FetchWeatherTask().execute(defaultLocation);
             return true;
         }
