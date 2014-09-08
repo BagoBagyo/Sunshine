@@ -5,7 +5,9 @@ package com.example.cesar.sunshine;
  */
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -92,7 +94,9 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute("94043");
+            SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            String defaultLocation = sharedPreferences.getString(getString(R.string.pref_location_key),"94043");
+            new FetchWeatherTask().execute(defaultLocation);
             return true;
         }
         return super.onOptionsItemSelected(item);
