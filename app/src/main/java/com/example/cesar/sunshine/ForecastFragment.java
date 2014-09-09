@@ -93,11 +93,10 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            //SharedPreferences sharedPref = getActivity().getSharedPreferences("pref_general",Context.MODE_PRIVATE);
-            String defaultLocation = sharedPreferences.getString("pref_general", getResources().getString(R.string.pref_location_default));
-            Log.v(LOG_TAG, "defaultLocation:" + defaultLocation);
-            new FetchWeatherTask().execute(defaultLocation);
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String location = sharedPrefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+            Log.v(LOG_TAG, "location:" + location);
+            new FetchWeatherTask().execute(location);
             return true;
         }
         return super.onOptionsItemSelected(item);
