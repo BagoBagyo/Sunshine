@@ -16,4 +16,31 @@
     <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
     <string name="pref_location_default" translatable="false">94043</string>
 
+    <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
+    <string name="pref_units_label">Temperature Units</string>
+
+    <!-- Key name for storing temperature units in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_units_key" translatable="false">units</string>
+
+    <!-- Default temperature units [CHAR LIMIT=NONE] -->
+    <string name="pref_units_metric">Metric</string>
+
+    <!-- Default temperature units [CHAR LIMIT=NONE] -->
+    <string name="pref_units_imperial">Imperial</string>
+
+    <!-- Default temperature units [CHAR LIMIT=NONE] -->
+    <string name="pref_units_default" translatable="false">@string/pref_units_metric</string>
+
+    <!-- Temperature unit values [CHAR LIMIT=NONE] -->
+    <string-array name="pref_units_values" translatable="false">
+        <item>@string/pref_units_metric</item>
+        <item>@string/pref_units_imperial</item>
+    </string-array>
+
+    <!-- Temperature unit values [CHAR LIMIT=NONE] -->
+    <string-array name="pref_units_entries" translatable="false">
+        <item>@string/pref_units_metric</item>
+        <item>@string/pref_units_imperial</item>
+    </string-array>
+
 </resources>
