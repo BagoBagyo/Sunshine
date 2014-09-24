@@ -40,7 +40,7 @@ import java.util.Date;
 //import android.widget.AdapterView;
 
 public class ForecastFragment extends Fragment {
-    private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
+    private final String LOG_TAG = ForecastFragment.class.getSimpleName();
     private ArrayAdapter<String> mForecastAdapter;
 
     public ForecastFragment() {
